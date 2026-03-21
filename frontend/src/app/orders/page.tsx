@@ -8,13 +8,13 @@ import Link from "next/link";
 import Navbar from "../../components/Navbar";
 
 interface PaymentDetails {
-    status: string;
     reference: string;
 }
 
 interface OrderWithPayment {
     id: string;
     totalAmount: number;
+    status: string;
     [key: string]: any;
     paymentDetails?: PaymentDetails;
 }
@@ -88,7 +88,7 @@ export default function OrdersPage() {
                 ) : (
                     <div className="space-y-4">
                         {orders.map((order: OrderWithPayment) => (
-                            // <Link key={order.id} href={`/orders/${order.id}`}>
+                            <Link key={order.id} href={`/orders/${order.id}`}>
                                 <div className="app-card p-6 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer">
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                         <div>
@@ -99,12 +99,12 @@ export default function OrdersPage() {
                                             <p className="text-2xl font-bold mt-1 text-teal-700">Rs. {order.totalAmount}</p>
                                         </div>
 
-                                        <div className={getStatusClass(order.paymentDetails?.status || "CREATED")}>
-                                            {order.paymentDetails?.status || "Loading..."}
+                                        <div className={getStatusClass(order.status || "CREATED")}>
+                                            {order.status || "CREATED"}
                                         </div>
                                     </div>
                                 </div>
-                            // </Link>
+                            </Link>
                         ))}
                     </div>
                 )}
