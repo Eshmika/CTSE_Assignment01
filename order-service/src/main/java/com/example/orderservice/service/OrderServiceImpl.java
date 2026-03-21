@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
         BigDecimal totalAmount = BigDecimal.ZERO;
         List<String> invalidItemIds = new ArrayList<>();
+        List<Order.OrderItem> orderItems = new ArrayList<>();
 
         for (CreateOrderRequest.OrderItemRequest itemRequest : request.getItems()) {
             if (itemRequest == null || itemRequest.getItemId() == null || itemRequest.getItemId().isBlank()) {
@@ -87,6 +89,10 @@ public class OrderServiceImpl implements OrderService {
 
             BigDecimal lineAmount = catalogItem.getPrice().multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
             totalAmount = totalAmount.add(lineAmount);
+            orderItems.add(Order.OrderItem.builder()
+                    .itemId(itemRequest.getItemId())
+                    .quantity(itemRequest.getQuantity())
+                    .build());
         }
 
         if (!invalidItemIds.isEmpty()) {
@@ -97,6 +103,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = Order.builder()
                 .userId(userId)
                 .totalAmount(totalAmount)
+                .items(orderItems)
                 .status("CREATED")
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -149,10 +156,20 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private OrderResponse toResponse(Order order) {
+        List<OrderResponse.OrderItemResponse> itemResponses = order.getItems() == null
+                ? Collections.emptyList()
+                : order.getItems().stream()
+                .map(item -> OrderResponse.OrderItemResponse.builder()
+                        .itemId(item.getItemId())
+                        .quantity(item.getQuantity())
+                        .build())
+                .toList();
+
         return OrderResponse.builder()
                 .id(order.getId())
                 .userId(order.getUserId())
                 .totalAmount(order.getTotalAmount())
+                .items(itemResponses)
                 .status(order.getStatus())
                 .build();
     }
