@@ -78,6 +78,13 @@ export default function PaymentDetailsPage() {
               </span>
             </div>
 
+            <div>
+              <p className="text-sm subtitle">Reference No</p>
+              <p className="font-semibold">
+                {payment.reference || "Not available"}
+              </p>
+            </div>
+
             {payment.transactionId && (
               <div>
                 <p className="text-sm subtitle">Transaction ID</p>

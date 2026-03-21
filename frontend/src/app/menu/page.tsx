@@ -1,14 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getItems } from "../../services/catalog";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
 
+const MENU_CATEGORIES = [
+  "Dessert",
+  "Beverage",
+  "Milkshake",
+  "Sides",
+  "Sandwich",
+  "Burger",
+];
+
 export default function MenuPage() {
   const [items, setItems] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const { addToCart } = useCart();
   const { token, user } = useAuth();
   const router = useRouter();
@@ -30,6 +41,20 @@ export default function MenuPage() {
     }
   }, [token]);
 
+  const filteredItems = useMemo(() => {
+    return items.filter((item: any) => {
+      const matchesCategory =
+        selectedCategory === "All" || item.category === selectedCategory;
+      const query = searchQuery.trim().toLowerCase();
+      const matchesSearch =
+        query.length === 0 ||
+        item.name?.toLowerCase().includes(query) ||
+        item.description?.toLowerCase().includes(query);
+
+      return matchesCategory && matchesSearch;
+    });
+  }, [items, selectedCategory, searchQuery]);
+
   if (!mounted || !token) {
     return null;
   }
@@ -44,13 +69,64 @@ export default function MenuPage() {
           <p className="subtitle">Fresh picks, comfort classics, and quick bites.</p>
         </div>
 
+        <div className="app-card p-5 mb-8 space-y-5">
+          <div>
+            <label htmlFor="menu-search" className="block text-sm font-semibold mb-2">
+              Search
+            </label>
+            <input
+              id="menu-search"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by item name or description"
+              className="w-full rounded-lg border border-border bg-white px-4 py-2.5 outline-none focus:ring-2 focus:ring-secondary/40"
+            />
+          </div>
+
+          <div>
+            <p className="text-sm font-semibold mb-3">Filter by category</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedCategory("All")}
+                className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                  selectedCategory === "All"
+                    ? "bg-secondary text-white"
+                    : "bg-muted-surface text-foreground hover:bg-[#f4e8d8]"
+                }`}
+              >
+                All
+              </button>
+              {MENU_CATEGORIES.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                    selectedCategory === category
+                      ? "bg-secondary text-white"
+                      : "bg-muted-surface text-foreground hover:bg-[#f4e8d8]"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {items.length === 0 ? (
           <div className="app-card text-center py-10">
             <p className="text-xl subtitle">Loading menu items...</p>
           </div>
+        ) : filteredItems.length === 0 ? (
+          <div className="app-card text-center py-10">
+            <p className="text-xl subtitle">No items match your search/filter.</p>
+          </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {items.map((item: any) => (
+            {filteredItems.map((item: any) => (
               <div
                 key={item.id}
                 className="app-card overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col"

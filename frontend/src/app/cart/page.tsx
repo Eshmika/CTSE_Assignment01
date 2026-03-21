@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { createOrder } from "../../services/orders";
+import { createOrder, updateOrderStatus } from "../../services/orders";
 import { chargePayment } from "../../services/payments";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -57,6 +57,9 @@ export default function CartPage() {
             const payment = await chargePayment(paymentData, token);
 
             console.log("Payment:", payment);
+
+            // 3. Update order status after successful payment
+            await updateOrderStatus(order.id, "PAID", token);
 
             alert("Payment successful! 🎉");
 
