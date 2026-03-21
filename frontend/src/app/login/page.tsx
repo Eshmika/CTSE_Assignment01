@@ -38,71 +38,73 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
-          <div className="px-8 py-10 text-center text-white" style={{ backgroundColor: '#389C9A' }}>
-            <h1 className="text-4xl font-bold mb-2">Welcome Back</h1>
-            <p>Sign in to your account</p>
+    <div className="auth-shell">
+      <div className="auth-grid">
+        <section className="auth-visual flex flex-col justify-between">
+          <div>
+            <span className="auth-badge">FoodHub</span>
+            <h1 className="text-5xl font-black leading-tight mb-4">
+              HELLO <span className="text-primary">.</span>
+            </h1>
+            <p className="text-xl subtitle max-w-sm">
+              Please enter your details to continue
+            </p>
           </div>
 
-          {/* Form */}
-          <div className="px-8 py-10">
-            {/* Email Input */}
-            <div className="mb-6">
-              <label className="block text-sm font-semibold mb-2" style={{ color: '#1D1D1D' }}>Email Address</label>
+          <div className="text-7xl md:text-8xl">🥗</div>
+        </section>
+
+        <section className="auth-form-pane">
+          <div className="mb-8">
+            <h2 className="text-4xl font-black tracking-tight">
+              <span className="text-primary">Food</span>Hub
+            </h2>
+            <p className="subtitle mt-2">Login to place and track orders</p>
+          </div>
+
+          <div className="space-y-5">
+            <div>
+              <label className="field-label">Username or E-mail</label>
               <input
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors duration-200"
-                style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F8F8' }}
-                onFocus={(e) => e.target.style.borderColor = '#389C9A'}
-                onBlur={(e) => e.target.style.borderColor = '#E0E0E0'}
+                className="field-input"
                 autoComplete="email"
               />
             </div>
 
-            {/* Password Input */}
-            <div className="mb-8">
-              <label className="block text-sm font-semibold mb-2" style={{ color: '#1D1D1D' }}>Password</label>
+            <div>
+              <label className="field-label">Password</label>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="Enter your password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors duration-200"
-                style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F8F8' }}
-                onFocus={(e) => e.target.style.borderColor = '#389C9A'}
-                onBlur={(e) => e.target.style.borderColor = '#E0E0E0'}
+                className="field-input"
                 autoComplete="current-password"
               />
             </div>
 
-            {/* Login Button */}
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="w-full font-bold py-3 rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#FEDB71', color: '#1D1D1D' }}
-            >
-              {isLoading ? "Logging in..." : "Login"}
+            <button onClick={handleSubmit} disabled={isLoading} className="btn btn-primary w-full rounded-full mt-3">
+              {isLoading ? "Logging in..." : "Log in"}
             </button>
-          </div>
 
-          {/* Footer */}
-          <div className="px-8 py-6 text-center" style={{ backgroundColor: '#F8F8F8', borderTop: '1px solid #E0E0E0' }}>
-            <p className="text-sm" style={{ color: '#6B6B6B' }}>
-              Don't have an account?{" "}
-              <Link href="/register" className="font-semibold hover:opacity-70 transition-colors" style={{ color: '#389C9A' }}>
-                Sign up here
+            <div className="text-center space-y-2 pt-2">
+              <Link href="/forgot-password" className="text-sm font-semibold text-primary">
+                Forget Password?
               </Link>
-            </p>
+
+              <p className="text-sm subtitle">
+                Do not have account?{" "}
+                <Link href="/register" className="font-bold text-primary">
+                  Sign Up
+                </Link>
+              </p>
+            </div>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

@@ -24,15 +24,7 @@ export default function OrderDetailsPage() {
         }
     }, [token, mounted, router]);
 
-    const getStatusColor = (status: string) => {
-        return status === "PAID"
-            ? "#389C9A"
-            : "#FEDB71";
-    };
-
-    const getStatusTextColor = (status: string) => {
-        return status === "PAID" ? "#FFFFFF" : "#1D1D1D";
-    };
+    const getStatusClass = (status: string) => (status === "PAID" ? "pill pill-paid" : "pill pill-created");
 
     useEffect(() => {
         if (token && params.id) {
@@ -46,71 +38,72 @@ export default function OrderDetailsPage() {
 
     if (!order) {
         return (
-            <div className="min-h-screen bg-white">
+            <div>
                 <Navbar />
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-                    <p className="text-lg" style={{ color: '#9B9B9B' }}>Loading order details...</p>
+                <div className="section-wrap-narrow text-center">
+                    <p className="text-lg subtitle">Loading order details...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Header */}
+        <div>
             <Navbar />
 
-            {/* Main Content */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="section-wrap">
                 <div className="flex items-center justify-between mb-10">
-                    <h1 className="text-4xl font-bold" style={{ color: '#1D1D1D' }}>📦 Order Details</h1>
-                    <Link href="/orders" className="px-4 py-2 rounded-lg font-semibold hover:shadow-lg transition-all" style={{ backgroundColor: '#389C9A', color: '#FFFFFF' }}>
-                        Back to Orders
-                    </Link>
+                    <h1 className="title-xl">Order Details</h1>
+                    <div className="flex items-center gap-3">
+                        <Link href={`/payments/${order.id}`} className="btn btn-accent">
+                            Payment Details
+                        </Link>
+                        <Link href="/orders" className="btn btn-secondary">
+                            Back to Orders
+                        </Link>
+                    </div>
                 </div>
 
-                {/* Order Summary Card */}
-                <div className="bg-white rounded-lg shadow-md p-8 mb-8 border-l-4" style={{ borderColor: getStatusColor(order.status) }}>
+                <div className="app-card p-8 mb-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
-                            <p className="text-sm" style={{ color: '#9B9B9B' }}>Order ID</p>
-                            <p className="text-2xl font-bold mt-2" style={{ color: '#1D1D1D' }}>{order.id}</p>
+                            <p className="text-sm subtitle">Order ID</p>
+                            <p className="text-2xl font-bold mt-2">{order.id}</p>
                         </div>
                         <div>
-                            <p className="text-sm" style={{ color: '#9B9B9B' }}>Status</p>
-                            <div className="mt-2 inline-block px-4 py-2 rounded-lg font-semibold" style={{ backgroundColor: getStatusColor(order.status), color: getStatusTextColor(order.status) }}>
+                            <p className="text-sm subtitle">Status</p>
+                            <div className={`mt-2 ${getStatusClass(order.status)}`}>
                                 {order.status}
                             </div>
                         </div>
                         <div>
-                            <p className="text-sm" style={{ color: '#9B9B9B' }}>Total Amount</p>
-                            <p className="text-2xl font-bold mt-2" style={{ color: '#389C9A' }}>Rs. {order.totalAmount}</p>
+                            <p className="text-sm subtitle">Total Amount</p>
+                            <p className="text-2xl font-bold mt-2 text-secondary">Rs. {order.totalAmount}</p>
                         </div>
                     </div>
                 </div>
 
-                {/* Items Section */}
                 <div>
-                    <h2 className="text-2xl font-bold mb-6" style={{ color: '#1D1D1D' }}>Order Items</h2>
+                    <h2 className="text-2xl font-bold mb-6">Order Items</h2>
 
                     <div className="space-y-4">
                         {order.items?.map((item: any) => (
                             <div
                                 key={item.itemId}
-                                className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-all duration-300"
+                                className="app-card p-6"
                             >
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                     <div>
-                                        <p className="text-lg font-semibold" style={{ color: '#1D1D1D' }}>
+                                        <p className="text-lg font-semibold">
                                             Item #{item.itemId}
                                         </p>
-                                        <p className="text-sm mt-2" style={{ color: '#6B6B6B' }}>Quantity: <span className="font-semibold" style={{ color: '#1D1D1D' }}>{item.quantity}</span></p>
-                                        <p className="text-sm mt-1" style={{ color: '#6B6B6B' }}>Unit Price: <span className="font-semibold" style={{ color: '#1D1D1D' }}>Rs. {item.price}</span></p>
+                                        <p className="text-sm mt-2 subtitle">Quantity: <span className="font-semibold text-foreground">{item.quantity}</span></p>
+                                        <p className="text-sm mt-1 subtitle">Unit Price: <span className="font-semibold text-foreground">Rs. {item.price}</span></p>
                                     </div>
 
                                     <div className="text-right">
-                                        <p className="text-sm" style={{ color: '#9B9B9B' }}>Subtotal</p>
-                                        <p className="text-2xl font-bold mt-2" style={{ color: '#389C9A' }}>
+                                        <p className="text-sm subtitle">Subtotal</p>
+                                        <p className="text-2xl font-bold mt-2 text-secondary">
                                             Rs. {item.price * item.quantity}
                                         </p>
                                     </div>

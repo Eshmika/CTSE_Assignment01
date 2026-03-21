@@ -16,54 +16,55 @@ export default function Navbar() {
   };
 
   return (
-    <div className="sticky top-0 z-50 shadow-lg" style={{ backgroundColor: '#389C9A' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex justify-between items-center">
-          <Link href={token ? "/menu" : "/"} className="text-4xl font-bold text-white hover:opacity-80 transition">
-            🍔 FoodHub
+    <div className="topbar">
+      <div className="section-wrap py-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <Link href={token ? "/menu" : "/"} className="text-3xl font-black text-[#fef8ef] tracking-tight">
+            FoodHub
           </Link>
 
           {token ? (
-            <div className="flex items-center gap-4">
-              <span className="text-white font-semibold">{user?.username}</span>
-              <Link
-                href="/cart"
-                className="px-4 py-2 rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center gap-2"
-                style={{ backgroundColor: '#FEDB71', color: '#1D1D1D' }}
-              >
-                <span>🛒</span>
-                <span>Cart ({cart?.length || 0})</span>
-              </Link>
-              <Link href="/orders" className="bg-blue-600 text-white px-4 py-2 rounded">
-                My Orders
-              </Link>
-              {user?.role === "ADMIN" && (
-                <Link href="/admin" className="bg-purple-600 text-white px-4 py-2 rounded">
-                  Admin Panel
-                </Link>
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+              {user?.role === "ADMIN" ? (
+                <>
+                  <span className="text-sm font-semibold text-[#d6fffb] mr-2">Hi, {user?.username}</span>
+                  <Link href="/admin" className="btn btn-ghost text-sm">
+                    New Menu
+                  </Link>
+                  <Link href="/menu" className="btn btn-ghost text-sm">
+                    Menu
+                  </Link>
+                  <button onClick={handleLogout} className="btn btn-danger text-sm">
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <span className="text-sm font-semibold text-[#d6fffb] mr-2">Hi, {user?.username}</span>
+                  <Link href="/menu" className="btn btn-ghost text-sm">
+                    Menu
+                  </Link>
+                  <Link href="/profile" className="btn btn-ghost text-sm">
+                    Profile
+                  </Link>
+                  <Link href="/orders" className="btn btn-ghost text-sm">
+                    Orders
+                  </Link>
+                  <Link href="/cart" className="btn btn-accent text-sm">
+                    Cart ({cart?.length || 0})
+                  </Link>
+                  <button onClick={handleLogout} className="btn btn-danger text-sm">
+                    Logout
+                  </button>
+                </>
               )}
-              <button
-                onClick={handleLogout}
-                className="px-6 py-3 rounded-lg font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
-                style={{ backgroundColor: '#1D1D1D' }}
-              >
-                Logout
-              </button>
             </div>
           ) : (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/login"
-                className="px-6 py-3 rounded-lg font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
-                style={{ backgroundColor: '#FEDB71', color: '#1D1D1D' }}
-              >
+            <div className="flex items-center gap-2">
+              <Link href="/login" className="btn btn-accent text-sm">
                 Login
               </Link>
-              <Link
-                href="/register"
-                className="px-6 py-3 rounded-lg font-semibold text-white hover:shadow-lg hover:scale-105 transition-all duration-300"
-                style={{ backgroundColor: '#1D1D1D' }}
-              >
+              <Link href="/register" className="btn btn-primary text-sm">
                 Sign Up
               </Link>
             </div>

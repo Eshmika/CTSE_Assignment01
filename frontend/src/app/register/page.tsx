@@ -40,99 +40,61 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
-          <div className="px-8 py-10 text-center text-white" style={{ backgroundColor: '#389C9A' }}>
-            <h1 className="text-4xl font-bold mb-2">Create Account</h1>
-            <p>Join us today and get started</p>
-          </div>
-
-          {/* Form */}
-          <div className="px-8 py-10">
-            {/* Full Name Input */}
-            <div className="mb-5">
-              <label className="block text-sm font-semibold mb-2" style={{ color: '#1D1D1D' }}>Full Name</label>
-              <input
-                type="text"
-                placeholder="John Doe"
-                value={form.fullName}
-                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors duration-200"
-                style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F8F8' }}
-                onFocus={(e) => e.target.style.borderColor = '#389C9A'}
-                onBlur={(e) => e.target.style.borderColor = '#E0E0E0'}
-              />
-            </div>
-
-            {/* Username Input */}
-            <div className="mb-5">
-              <label className="block text-sm font-semibold mb-2" style={{ color: '#1D1D1D' }}>Username</label>
-              <input
-                type="text"
-                placeholder="johndoe"
-                value={form.username}
-                onChange={(e) => setForm({ ...form, username: e.target.value })}
-                className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors duration-200"
-                style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F8F8' }}
-                onFocus={(e) => e.target.style.borderColor = '#389C9A'}
-                onBlur={(e) => e.target.style.borderColor = '#E0E0E0'}
-              />
-            </div>
-
-            {/* Email Input */}
-            <div className="mb-5">
-              <label className="block text-sm font-semibold mb-2" style={{ color: '#1D1D1D' }}>Email Address</label>
-              <input
-                type="email"
-                placeholder="john@example.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors duration-200"
-                style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F8F8' }}
-                onFocus={(e) => e.target.style.borderColor = '#389C9A'}
-                onBlur={(e) => e.target.style.borderColor = '#E0E0E0'}
-              />
-            </div>
-
-            {/* Password Input */}
-            <div className="mb-8">
-              <label className="block text-sm font-semibold mb-2" style={{ color: '#1D1D1D' }}>Password</label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors duration-200"
-                style={{ borderColor: '#E0E0E0', backgroundColor: '#F8F8F8' }}
-                onFocus={(e) => e.target.style.borderColor = '#389C9A'}
-                onBlur={(e) => e.target.style.borderColor = '#E0E0E0'}
-              />
-            </div>
-
-            {/* Register Button */}
-            <button
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-              className="w-full font-bold py-3 rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#FEDB71', color: '#1D1D1D' }}
-            >
-              {isSubmitting ? "Creating Account..." : "Create Account"}
-            </button>
-          </div>
-
-          {/* Footer */}
-          <div className="px-8 py-6 text-center" style={{ backgroundColor: '#F8F8F8', borderTop: '1px solid #E0E0E0' }}>
-            <p className="text-sm" style={{ color: '#6B6B6B' }}>
-              Already have an account?{" "}
-              <Link href="/login" className="font-semibold hover:opacity-70 transition-colors" style={{ color: '#389C9A' }}>
-                Log in here
-              </Link>
+    <div className="auth-shell">
+      <div className="auth-grid">
+        <section className="auth-visual flex flex-col justify-between">
+          <div>
+            <span className="auth-badge">FoodHub</span>
+            <h1 className="text-5xl font-black leading-tight mb-4">
+              JOIN <span className="text-primary">US</span>
+            </h1>
+            <p className="text-xl subtitle max-w-sm">
+              Create your account and get instant access to menus, cart and order tracking.
             </p>
           </div>
-        </div>
+
+          <div className="text-7xl md:text-8xl">🍜</div>
+        </section>
+
+        <section className="auth-form-pane">
+          <div className="mb-8">
+            <h2 className="text-4xl font-black tracking-tight">
+              <span className="text-primary">Create</span> Account
+            </h2>
+            <p className="subtitle mt-2">Start your food ordering journey</p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="field-label">Full Name</label>
+              <input type="text" placeholder="John Doe" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="field-input" />
+            </div>
+
+            <div>
+              <label className="field-label">Username</label>
+              <input type="text" placeholder="johndoe" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="field-input" />
+            </div>
+
+            <div>
+              <label className="field-label">Email Address</label>
+              <input type="email" placeholder="john@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="field-input" />
+            </div>
+
+            <div>
+              <label className="field-label">Password</label>
+              <input type="password" placeholder="Choose a password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="field-input" />
+            </div>
+
+            <button onClick={handleSubmit} disabled={isSubmitting} className="btn btn-primary w-full rounded-full mt-3">
+              {isSubmitting ? "Creating account..." : "Sign Up"}
+            </button>
+
+            <p className="text-sm subtitle text-center pt-2">
+              Already have an account?{" "}
+              <Link href="/login" className="font-bold text-primary">Log in</Link>
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );

@@ -4,8 +4,8 @@ import { CartProvider  } from "../context/CartContext";
 
 export default function RootLayout({ children }: any) {
   return (
-    <html>
-      <body>
+    <html lang="en">
+      <body className="app-shell">
         <AuthProvider>
           <CartProvider>{children}</CartProvider>
         </AuthProvider>

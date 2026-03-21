@@ -75,55 +75,49 @@ export default function CartPage() {
     };
 
     return (
-        <div className="min-h-screen bg-white">
-            {/* Header */}
+        <div>
             <Navbar />
 
-            {/* Main Content */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="section-wrap">
+                <h1 className="title-xl mb-8">Your Cart</h1>
                 {cart.length === 0 ? (
-                    <div className="text-center py-16 bg-white rounded-lg shadow-md">
-                        <p className="text-2xl mb-4" style={{ color: '#9B9B9B' }}>Your cart is empty</p>
-                        <Link href="/menu" className="inline-block px-6 py-2 rounded-lg font-semibold hover:shadow-lg transition-all" style={{ backgroundColor: '#389C9A', color: '#FFFFFF' }}>
+                    <div className="app-card text-center py-16">
+                        <p className="text-2xl mb-4 subtitle">Your cart is empty</p>
+                        <Link href="/menu" className="btn btn-secondary inline-block">
                             Continue Shopping
                         </Link>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {/* Cart Items */}
                         <div className="lg:col-span-2">
-                            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                            <div className="app-card overflow-hidden">
                                 <div className="divide-y divide-gray-200">
                                     {cart.map((item: any) => (
                                         <div
                                             key={item.id}
-                                            className="p-6 hover:bg-gray-50 transition-colors duration-200"
+                                            className="p-6 hover:bg-[#fff9f1] transition-colors duration-200"
                                         >
                                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                                                {/* Item Info */}
                                                 <div className="grow">
-                                                    <h3 className="text-lg font-semibold mb-1" style={{ color: '#1D1D1D' }}>{item.name}</h3>
-                                                    <p className="text-sm mb-3" style={{ color: '#6B6B6B' }}>Unit Price: <span className="font-semibold" style={{ color: '#1D1D1D' }}>Rs. {item.price}</span></p>
-                                                    <p className="font-bold text-lg" style={{ color: '#1D1D1D' }}>Subtotal: Rs. {item.price * item.quantity}</p>
+                                                    <h3 className="text-lg font-semibold mb-1">{item.name}</h3>
+                                                    <p className="text-sm mb-3 subtitle">Unit Price: <span className="font-semibold text-foreground">Rs. {item.price}</span></p>
+                                                    <p className="font-bold text-lg">Subtotal: Rs. {item.price * item.quantity}</p>
                                                 </div>
 
-                                                {/* Quantity Controls */}
-                                                <div className="flex items-center gap-2 rounded-lg p-2 w-fit" style={{ backgroundColor: '#F8F8F8' }}>
+                                                <div className="flex items-center gap-2 rounded-lg p-2 w-fit bg-muted-surface">
                                                     <button
                                                         onClick={() => removeFromCart(item.id)}
-                                                        className="w-8 h-8 rounded font-bold transition-colors duration-200 flex items-center justify-center text-white hover:opacity-80"
-                                                        style={{ backgroundColor: '#389C9A' }}
+                                                        className="w-8 h-8 rounded font-bold flex items-center justify-center text-white bg-secondary"
                                                         title="Decrease quantity"
                                                     >
                                                         −
                                                     </button>
 
-                                                    <span className="w-8 text-center font-semibold" style={{ color: '#1D1D1D' }}>{item.quantity}</span>
+                                                    <span className="w-8 text-center font-semibold">{item.quantity}</span>
 
                                                     <button
                                                         onClick={() => addToCart(item)}
-                                                        className="w-8 h-8 rounded font-bold transition-colors duration-200 flex items-center justify-center text-white hover:opacity-80"
-                                                        style={{ backgroundColor: '#389C9A', color: '#FFFFFF' }}
+                                                        className="w-8 h-8 rounded font-bold flex items-center justify-center text-white bg-secondary"
                                                         title="Increase quantity"
                                                     >
                                                         +
@@ -136,31 +130,22 @@ export default function CartPage() {
                             </div>
                         </div>
 
-                        {/* Order Summary */}
                         <div className="lg:col-span-1">
-                            <div className="bg-white rounded-lg shadow-md p-6 sticky top-24 h-fit">
-                                <h2 className="text-2xl font-bold mb-6" style={{ color: '#1D1D1D' }}>Order Summary</h2>
+                            <div className="app-card p-6 sticky top-24 h-fit">
+                                <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
 
-                                <div className="pt-6 mb-6" style={{ borderTop: '1px solid #F8F8F8' }}>
+                                <div className="pt-6 mb-6 border-t border-border">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-lg font-bold" style={{ color: '#1D1D1D' }}>Total</span>
-                                        <span className="text-2xl font-bold" style={{ color: '#389C9A' }}>Rs. {total}</span>
+                                        <span className="text-lg font-bold">Total</span>
+                                        <span className="text-2xl font-bold text-secondary">Rs. {total}</span>
                                     </div>
                                 </div>
 
-                                <button
-                                    onClick={handleCheckout}
-                                    className="w-full py-3 rounded-lg font-bold hover:shadow-lg hover:scale-105 transition-all duration-300 active:scale-95 text-white"
-                                    style={{ backgroundColor: '#FEDB71', color: '#1D1D1D' }}
-                                >
+                                <button onClick={handleCheckout} className="btn btn-primary w-full">
                                     Proceed to Checkout
                                 </button>
 
-                                <Link
-                                    href="/menu"
-                                    className="block text-center mt-4 font-semibold hover:opacity-70 transition-colors"
-                                    style={{ color: '#389C9A' }}
-                                >
+                                <Link href="/menu" className="block text-center mt-4 font-semibold text-secondary">
                                     Continue Shopping
                                 </Link>
                             </div>
