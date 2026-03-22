@@ -107,7 +107,7 @@ export default function AdminPage() {
                 <option>Milkshake</option>
                 <option>Beverage</option>
                 <option>Dessert</option>
-                </select>
+              </select>
             </div>
 
             <div>
@@ -144,13 +144,20 @@ export default function AdminPage() {
                 className="app-card p-6"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div>
-                    <p className="text-lg font-semibold">{item.name}</p>
-                    <p className="text-sm subtitle">{item.description}</p>
-                    <p className="mt-2 font-bold text-secondary">Rs. {item.price}</p>
-                    <p className="pill pill-created mt-1">
-                      {item.category}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    <img
+                      src={item.imageUrl}
+                      alt={item.name}
+                      className="w-25 h-25 object-contain rounded"
+                    />
+                    <div>
+                      <p className="text-lg font-semibold">{item.name}</p>
+                      <p className="text-sm subtitle">{item.description}</p>
+                      <p className="mt-2 font-bold text-secondary">Rs. {item.price}</p>
+                      <p className="pill pill-created mt-1">
+                        {item.category}
+                      </p>
+                    </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2">
