@@ -97,11 +97,17 @@ export default function AdminPage() {
 
             <div>
               <label className="field-label">Category</label>
-              <input
-                placeholder="Category"
+              <select
                 className="field-input"
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
-              />
+              >
+                <option>Burger</option>
+                <option>Sandwich</option>
+                <option>Sides</option>
+                <option>Milkshake</option>
+                <option>Beverage</option>
+                <option>Dessert</option>
+                </select>
             </div>
 
             <div>
