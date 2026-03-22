@@ -131,11 +131,11 @@ export default function MenuPage() {
                 key={item.id}
                 className="app-card overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col"
               >
-                <div className="relative h-48 overflow-hidden bg-[#f7ead8]">
+                <div className="relative h-56 bg-[#f7ead8] flex items-center justify-center">
                   <img
                     src={item.imageUrl}
                     alt={item.name}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    className="max-w-full max-h-56 object-contain hover:scale-105 transition-transform duration-300"
                   />
                   {item.availability !== "AVAILABLE" && (
                     <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
