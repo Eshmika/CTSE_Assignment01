@@ -21,10 +21,14 @@ public class JwtTokenValidator {
 
     /**
      * Validate JWT token
+     * 
      * @param token JWT token string
      * @return true if valid, false otherwise
      */
     public boolean validateToken(String token) {
+        if (token == null || token.isBlank()) {
+            return false;
+        }
         try {
             Jwts.parser()
                     .verifyWith(getSigningKey())
@@ -32,21 +36,22 @@ public class JwtTokenValidator {
                     .parseSignedClaims(token);
             return true;
         } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token: {}", ex.getMessage());
+            logger.debug("Invalid JWT token: {}", ex.getMessage());
         } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token: {}", ex.getMessage());
+            logger.debug("Expired JWT token: {}", ex.getMessage());
         } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token: {}", ex.getMessage());
+            logger.debug("Unsupported JWT token: {}", ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty: {}", ex.getMessage());
+            logger.debug("JWT claims string is empty: {}", ex.getMessage());
         } catch (Exception ex) {
-            logger.error("JWT token validation error: {}", ex.getMessage());
+            logger.debug("JWT token validation error: {}", ex.getMessage());
         }
         return false;
     }
 
     /**
      * Extract user ID from token
+     * 
      * @param token JWT token string
      * @return User ID
      */
@@ -55,13 +60,14 @@ public class JwtTokenValidator {
             Claims claims = extractAllClaims(token);
             return claims.get("userId", String.class);
         } catch (Exception e) {
-            logger.error("Error extracting userId from token: {}", e.getMessage());
+            logger.debug("Error extracting userId from token: {}", e.getMessage());
             return null;
         }
     }
 
     /**
      * Extract username from token
+     * 
      * @param token JWT token string
      * @return Username
      */
@@ -70,13 +76,14 @@ public class JwtTokenValidator {
             Claims claims = extractAllClaims(token);
             return claims.getSubject();
         } catch (Exception e) {
-            logger.error("Error extracting username from token: {}", e.getMessage());
+            logger.debug("Error extracting username from token: {}", e.getMessage());
             return null;
         }
     }
 
     /**
      * Extract roles from token
+     * 
      * @param token JWT token string
      * @return List of roles
      */
@@ -93,13 +100,14 @@ public class JwtTokenValidator {
                 return List.of(roleValue);
             }
         } catch (Exception e) {
-            logger.error("Error extracting roles from token: {}", e.getMessage());
+            logger.debug("Error extracting roles from token: {}", e.getMessage());
         }
         return List.of();
     }
 
     /**
      * Check if token is expired
+     * 
      * @param token JWT token string
      * @return true if expired, false otherwise
      */
@@ -114,6 +122,7 @@ public class JwtTokenValidator {
 
     /**
      * Extract all claims from token
+     * 
      * @param token JWT token string
      * @return Claims object
      */
@@ -127,6 +136,7 @@ public class JwtTokenValidator {
 
     /**
      * Get signing key from secret
+     * 
      * @return SecretKey for JWT verification
      */
     private SecretKey getSigningKey() {

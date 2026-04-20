@@ -38,7 +38,7 @@ class JwtTokenValidatorTest {
     }
 
     /** Build a token signed with the same key as the validator. */
-    private String buildToken(String userId, String username, String role, long expiryMs) {
+    private String buildToken(String userId, String username, String role, Date issuedAt, Date expiration) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", userId);
         claims.put("username", username);
@@ -47,8 +47,8 @@ class JwtTokenValidatorTest {
         return Jwts.builder()
                 .claims(claims)
                 .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + expiryMs))
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .signWith(signingKey)
                 .compact();
     }
@@ -57,13 +57,17 @@ class JwtTokenValidatorTest {
 
     @Test
     void validateToken_validToken_returnsTrue() {
-        String token = buildToken("u1", "alice", "CUSTOMER", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("u1", "alice", "CUSTOMER", issuedAt, expiration);
         assertThat(jwtTokenValidator.validateToken(token)).isTrue();
     }
 
     @Test
     void validateToken_expiredToken_returnsFalse() {
-        String token = buildToken("u1", "alice", "CUSTOMER", -1000); // already expired
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() - 5 * 60 * 1000);
+        String token = buildToken("u1", "alice", "CUSTOMER", issuedAt, expiration);
         assertThat(jwtTokenValidator.validateToken(token)).isFalse();
     }
 
@@ -72,10 +76,12 @@ class JwtTokenValidatorTest {
         // Sign with a different key
         SecretKey wrongKey = Keys.hmacShaKeyFor(
                 "wrong-key-that-is-different-but-still-32-chars-long!!".getBytes(StandardCharsets.UTF_8));
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
         String token = Jwts.builder()
                 .subject("alice")
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 900_000))
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .signWith(wrongKey)
                 .compact();
         assertThat(jwtTokenValidator.validateToken(token)).isFalse();
@@ -98,7 +104,9 @@ class JwtTokenValidatorTest {
 
     @Test
     void validateToken_tamperedPayload_returnsFalse() {
-        String token = buildToken("u1", "alice", "CUSTOMER", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("u1", "alice", "CUSTOMER", issuedAt, expiration);
         // Split and corrupt the payload (middle) section
         String[] parts = token.split("\\.");
         // append garbage to the signature to corrupt it
@@ -110,7 +118,9 @@ class JwtTokenValidatorTest {
 
     @Test
     void extractUserId_validToken_returnsCorrectId() {
-        String token = buildToken("user-abc-123", "alice", "CUSTOMER", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("user-abc-123", "alice", "CUSTOMER", issuedAt, expiration);
         assertThat(jwtTokenValidator.extractUserId(token)).isEqualTo("user-abc-123");
     }
 
@@ -118,7 +128,9 @@ class JwtTokenValidatorTest {
 
     @Test
     void extractUsername_validToken_returnsCorrectUsername() {
-        String token = buildToken("u1", "charlie", "ADMIN", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("u1", "charlie", "ADMIN", issuedAt, expiration);
         assertThat(jwtTokenValidator.extractUsername(token)).isEqualTo("charlie");
     }
 
@@ -126,14 +138,18 @@ class JwtTokenValidatorTest {
 
     @Test
     void extractRoles_singleRoleStringClaim_returnsListWithOneRole() {
-        String token = buildToken("u1", "alice", "CUSTOMER", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("u1", "alice", "CUSTOMER", issuedAt, expiration);
         List<String> roles = jwtTokenValidator.extractRoles(token);
         assertThat(roles).containsExactly("CUSTOMER");
     }
 
     @Test
     void extractRoles_adminRole_returnsListWithAdmin() {
-        String token = buildToken("a1", "admin", "ADMIN", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("a1", "admin", "ADMIN", issuedAt, expiration);
         List<String> roles = jwtTokenValidator.extractRoles(token);
         assertThat(roles).containsExactly("ADMIN");
     }
@@ -146,11 +162,13 @@ class JwtTokenValidatorTest {
         claims.put("username", "alice");
         claims.put("roles", List.of("CUSTOMER", "MANAGER"));
 
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
         String token = Jwts.builder()
                 .claims(claims)
                 .subject("alice")
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 900_000))
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .signWith(signingKey)
                 .compact();
 
@@ -162,13 +180,17 @@ class JwtTokenValidatorTest {
 
     @Test
     void isTokenExpired_freshToken_returnsFalse() {
-        String token = buildToken("u1", "alice", "CUSTOMER", 900_000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + 5 * 60 * 1000);
+        String token = buildToken("u1", "alice", "CUSTOMER", issuedAt, expiration);
         assertThat(jwtTokenValidator.isTokenExpired(token)).isFalse();
     }
 
     @Test
     void isTokenExpired_expiredToken_returnsTrue() {
-        String token = buildToken("u1", "alice", "CUSTOMER", -1000);
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() - 5 * 60 * 1000);
+        String token = buildToken("u1", "alice", "CUSTOMER", issuedAt, expiration);
         assertThat(jwtTokenValidator.isTokenExpired(token)).isTrue();
     }
 }
