@@ -50,7 +50,8 @@ export default function ProfilePage() {
       await updateProfile(form, token);
       alert("Profile updated");
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to update profile";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to update profile";
       alert(errorMessage);
     } finally {
       setIsSaving(false);
@@ -63,34 +64,63 @@ export default function ProfilePage() {
 
       <div className="section-wrap-narrow">
         <div className="app-card p-8 mb-6">
-          <h1 className="title-xl mb-7">
-            My Profile
-          </h1>
+          <h1 className="title-xl mb-7">My Profile</h1>
 
           <div className="space-y-5">
             <div>
-              <label className="field-label">Full Name</label>
-              <input value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="field-input" />
+              <label htmlFor="profile-full-name" className="field-label">
+                Full Name
+              </label>
+              <input
+                id="profile-full-name"
+                value={form.fullName}
+                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                className="field-input"
+              />
             </div>
 
             <div>
-              <label className="field-label">Username</label>
-              <input value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="field-input" readOnly/>
+              <label htmlFor="profile-username" className="field-label">
+                Username
+              </label>
+              <input
+                id="profile-username"
+                value={form.username}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                className="field-input"
+                readOnly
+              />
             </div>
 
             <div>
-              <label className="field-label">Email</label>
-              <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="field-input" readOnly/>
+              <label htmlFor="profile-email" className="field-label">
+                Email
+              </label>
+              <input
+                id="profile-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="field-input"
+                readOnly
+              />
             </div>
           </div>
 
-          <button onClick={handleSave} disabled={isSaving} className="btn btn-primary w-full mt-8">
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="btn btn-primary w-full mt-8"
+          >
             {isSaving ? "Saving..." : "Save Profile"}
           </button>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link href="/change-password" className="btn btn-secondary text-center">
+          <Link
+            href="/change-password"
+            className="btn btn-secondary text-center"
+          >
             Change Password
           </Link>
           <Link href="/addresses" className="btn btn-ghost text-center">
@@ -101,4 +131,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-

@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import Navbar from "../../components/Navbar";
-import { addAddress, deleteAddress, getAddresses, updateAddress } from "../../services/auth";
+import {
+  addAddress,
+  deleteAddress,
+  getAddresses,
+  updateAddress,
+} from "../../services/auth";
 
 type Address = {
   id?: string;
@@ -58,6 +63,12 @@ export default function AddressesPage() {
     }
   }, [token]);
 
+  const submitButtonLabel = isSubmitting
+    ? "Saving..."
+    : editingId
+    ? "Update Address"
+    : "Add Address";
+
   if (!mounted || !token) {
     return null;
   }
@@ -90,7 +101,8 @@ export default function AddressesPage() {
       resetForm();
       loadAddresses();
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Address operation failed";
+      const errorMessage =
+        err instanceof Error ? err.message : "Address operation failed";
       alert(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -114,9 +126,7 @@ export default function AddressesPage() {
       <Navbar />
 
       <div className="section-wrap">
-        <h1 className="title-xl mb-7">
-          My Addresses
-        </h1>
+        <h1 className="title-xl mb-7">My Addresses</h1>
 
         <div className="app-card p-6 mb-8">
           <h2 className="text-xl font-bold mb-5">
@@ -124,47 +134,87 @@ export default function AddressesPage() {
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              placeholder="Line 1"
-              value={form.line1}
-              onChange={(e) => setForm({ ...form, line1: e.target.value })}
-              className="field-input"
-            />
-            <input
-              placeholder="Line 2"
-              value={form.line2}
-              onChange={(e) => setForm({ ...form, line2: e.target.value })}
-              className="field-input"
-            />
-            <input
-              placeholder="City"
-              value={form.city}
-              onChange={(e) => setForm({ ...form, city: e.target.value })}
-              className="field-input"
-            />
-            <input
-              placeholder="State"
-              value={form.state}
-              onChange={(e) => setForm({ ...form, state: e.target.value })}
-              className="field-input"
-            />
-            <input
-              placeholder="Postal Code"
-              value={form.postalCode}
-              onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
-              className="field-input"
-            />
-            <input
-              placeholder="Country"
-              value={form.country}
-              onChange={(e) => setForm({ ...form, country: e.target.value })}
-              className="field-input"
-            />
+            <div>
+              <label htmlFor="address-line1" className="field-label">
+                Line 1
+              </label>
+              <input
+                id="address-line1"
+                placeholder="Line 1"
+                value={form.line1}
+                onChange={(e) => setForm({ ...form, line1: e.target.value })}
+                className="field-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="address-line2" className="field-label">
+                Line 2
+              </label>
+              <input
+                id="address-line2"
+                placeholder="Line 2"
+                value={form.line2}
+                onChange={(e) => setForm({ ...form, line2: e.target.value })}
+                className="field-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="address-city" className="field-label">
+                City
+              </label>
+              <input
+                id="address-city"
+                placeholder="City"
+                value={form.city}
+                onChange={(e) => setForm({ ...form, city: e.target.value })}
+                className="field-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="address-state" className="field-label">
+                State
+              </label>
+              <input
+                id="address-state"
+                placeholder="State"
+                value={form.state}
+                onChange={(e) => setForm({ ...form, state: e.target.value })}
+                className="field-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="address-postal-code" className="field-label">
+                Postal Code
+              </label>
+              <input
+                id="address-postal-code"
+                placeholder="Postal Code"
+                value={form.postalCode}
+                onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
+                className="field-input"
+              />
+            </div>
+            <div>
+              <label htmlFor="address-country" className="field-label">
+                Country
+              </label>
+              <input
+                id="address-country"
+                placeholder="Country"
+                value={form.country}
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
+                className="field-input"
+              />
+            </div>
           </div>
 
           <div className="flex gap-3 mt-5">
-            <button onClick={handleSubmit} disabled={isSubmitting} className="btn btn-primary">
-              {isSubmitting ? "Saving..." : editingId ? "Update Address" : "Add Address"}
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="btn btn-primary"
+            >
+              {submitButtonLabel}
             </button>
 
             {editingId && (
@@ -177,15 +227,11 @@ export default function AddressesPage() {
 
         <div className="space-y-4">
           {addresses.length === 0 ? (
-            <div className="app-card p-6 subtitle">
-              No addresses available
-            </div>
+            <div className="app-card p-6 subtitle">No addresses available</div>
           ) : (
             addresses.map((address, index) => (
               <div key={address.id || String(index)} className="app-card p-6">
-                <p className="font-semibold">
-                  {address.line1}
-                </p>
+                <p className="font-semibold">{address.line1}</p>
                 {address.line2 && <p className="subtitle">{address.line2}</p>}
                 <p className="subtitle">
                   {address.city} {address.state} {address.postalCode}
@@ -193,7 +239,10 @@ export default function AddressesPage() {
                 <p className="subtitle">{address.country}</p>
 
                 <div className="flex gap-3 mt-4">
-                  <button onClick={() => startEdit(address)} className="btn btn-secondary">
+                  <button
+                    onClick={() => startEdit(address)}
+                    className="btn btn-secondary"
+                  >
                     Edit
                   </button>
 
@@ -203,7 +252,10 @@ export default function AddressesPage() {
                         deleteAddress(address.id as string, token)
                           .then(loadAddresses)
                           .catch((err: unknown) => {
-                            const errorMessage = err instanceof Error ? err.message : "Delete failed";
+                            const errorMessage =
+                              err instanceof Error
+                                ? err.message
+                                : "Delete failed";
                             alert(errorMessage);
                           });
                       }}
@@ -221,4 +273,3 @@ export default function AddressesPage() {
     </div>
   );
 }
-

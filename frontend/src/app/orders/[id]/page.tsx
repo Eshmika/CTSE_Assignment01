@@ -27,8 +27,12 @@ export default function OrderDetailsPage() {
   const params = useParams();
   const [mounted, setMounted] = useState(false);
   const [order, setOrder] = useState<any>(null);
-  const [catalogItemsById, setCatalogItemsById] = useState<Record<string, CatalogItem>>({});
-  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
+  const [catalogItemsById, setCatalogItemsById] = useState<
+    Record<string, CatalogItem>
+  >({});
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(
+    null
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -55,7 +59,9 @@ export default function OrderDetailsPage() {
       return;
     }
 
-    const uniqueItemIds = [...new Set(items.map((item: any) => item.itemId))] as string[];
+    const uniqueItemIds = [
+      ...new Set(items.map((item: any) => item.itemId)),
+    ] as string[];
 
     Promise.all(
       uniqueItemIds.map(async (itemId) => {
@@ -80,7 +86,11 @@ export default function OrderDetailsPage() {
   const getStatusClass = (status: string) =>
     status === "PAID" ? "pill pill-paid" : "pill pill-created";
 
-  if (!mounted || !token) {
+  if (!mounted) {
+    return null;
+  }
+
+  if (!token) {
     return null;
   }
 
@@ -114,11 +124,15 @@ export default function OrderDetailsPage() {
             </div>
             <div>
               <p className="text-sm subtitle">Status</p>
-              <div className={`mt-2 ${getStatusClass(order.status)}`}>{order.status}</div>
+              <div className={`mt-2 ${getStatusClass(order.status)}`}>
+                {order.status}
+              </div>
             </div>
             <div>
               <p className="text-sm subtitle">Total Amount</p>
-              <p className="text-2xl font-bold mt-2 text-secondary">Rs. {order.totalAmount}</p>
+              <p className="text-2xl font-bold mt-2 text-secondary">
+                Rs. {order.totalAmount}
+              </p>
             </div>
           </div>
         </div>
@@ -129,7 +143,10 @@ export default function OrderDetailsPage() {
           <div className="space-y-4">
             {order.items?.map((item: any) => {
               const catalogItem = catalogItemsById[item.itemId];
-              const unitPrice = typeof catalogItem?.price === "number" ? catalogItem.price : item.price;
+              const unitPrice =
+                typeof catalogItem?.price === "number"
+                  ? catalogItem.price
+                  : item.price;
               const imageSrc = catalogItem?.imageUrl || item.imageUrl;
 
               return (
@@ -151,10 +168,16 @@ export default function OrderDetailsPage() {
                           {catalogItem?.name || `Item #${item.itemId}`}
                         </p>
                         <p className="text-sm mt-2 subtitle">
-                          Quantity: <span className="font-semibold text-foreground">{item.quantity}</span>
+                          Quantity:{" "}
+                          <span className="font-semibold text-foreground">
+                            {item.quantity}
+                          </span>
                         </p>
                         <p className="text-sm mt-1 subtitle">
-                          Unit Price: <span className="font-semibold text-foreground">Rs. {unitPrice}</span>
+                          Unit Price:{" "}
+                          <span className="font-semibold text-foreground">
+                            Rs. {unitPrice}
+                          </span>
                         </p>
                       </div>
                     </div>

@@ -30,8 +30,9 @@ export default function LoginPage() {
       loginUser(res);
 
       router.push("/menu");
-    } catch (err) {
-      alert("Login failed");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Login failed";
+      alert(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -64,8 +65,11 @@ export default function LoginPage() {
 
           <div className="space-y-5">
             <div>
-              <label className="field-label">Username or E-mail</label>
+              <label htmlFor="login-email" className="field-label">
+                Username or E-mail
+              </label>
               <input
+                id="login-email"
                 type="email"
                 placeholder="you@example.com"
                 value={form.email}
@@ -76,8 +80,11 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="field-label">Password</label>
+              <label htmlFor="login-password" className="field-label">
+                Password
+              </label>
               <input
+                id="login-password"
                 type="password"
                 placeholder="Enter your password"
                 value={form.password}
@@ -87,12 +94,19 @@ export default function LoginPage() {
               />
             </div>
 
-            <button onClick={handleSubmit} disabled={isLoading} className="btn btn-primary w-full rounded-full mt-3">
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="btn btn-primary w-full rounded-full mt-3"
+            >
               {isLoading ? "Logging in..." : "Log in"}
             </button>
 
             <div className="text-center space-y-2 pt-2">
-              <Link href="/forgot-password" className="text-sm font-semibold text-primary">
+              <Link
+                href="/forgot-password"
+                className="text-sm font-semibold text-primary"
+              >
                 Forget Password?
               </Link>
 

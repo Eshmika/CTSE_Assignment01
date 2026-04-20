@@ -13,7 +13,7 @@ export default function RegisterPage() {
     username: "",
     password: "",
     email: "",
-    fullName: ""
+    fullName: "",
   });
 
   const handleSubmit = async () => {
@@ -49,7 +49,8 @@ export default function RegisterPage() {
               JOIN <span className="text-primary">US</span>
             </h1>
             <p className="text-xl subtitle max-w-sm">
-              Create your account and get instant access to menus, cart and order tracking.
+              Create your account and get instant access to menus, cart and
+              order tracking.
             </p>
           </div>
 
@@ -66,32 +67,74 @@ export default function RegisterPage() {
 
           <div className="space-y-4">
             <div>
-              <label className="field-label">Full Name</label>
-              <input type="text" placeholder="John Doe" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} className="field-input" />
+              <label htmlFor="register-full-name" className="field-label">
+                Full Name
+              </label>
+              <input
+                id="register-full-name"
+                type="text"
+                placeholder="John Doe"
+                value={form.fullName}
+                onChange={(e) => setForm({ ...form, fullName: e.target.value })}
+                className="field-input"
+              />
             </div>
 
             <div>
-              <label className="field-label">Username</label>
-              <input type="text" placeholder="johndoe" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} className="field-input" />
+              <label htmlFor="register-username" className="field-label">
+                Username
+              </label>
+              <input
+                id="register-username"
+                type="text"
+                placeholder="johndoe"
+                value={form.username}
+                onChange={(e) => setForm({ ...form, username: e.target.value })}
+                className="field-input"
+              />
             </div>
 
             <div>
-              <label className="field-label">Email Address</label>
-              <input type="email" placeholder="john@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="field-input" />
+              <label htmlFor="register-email" className="field-label">
+                Email Address
+              </label>
+              <input
+                id="register-email"
+                type="email"
+                placeholder="john@example.com"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                className="field-input"
+              />
             </div>
 
             <div>
-              <label className="field-label">Password</label>
-              <input type="password" placeholder="Choose a password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} className="field-input" />
+              <label htmlFor="register-password" className="field-label">
+                Password
+              </label>
+              <input
+                id="register-password"
+                type="password"
+                placeholder="Choose a password"
+                value={form.password}
+                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                className="field-input"
+              />
             </div>
 
-            <button onClick={handleSubmit} disabled={isSubmitting} className="btn btn-primary w-full rounded-full mt-3">
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="btn btn-primary w-full rounded-full mt-3"
+            >
               {isSubmitting ? "Creating account..." : "Sign Up"}
             </button>
 
             <p className="text-sm subtitle text-center pt-2">
               Already have an account?{" "}
-              <Link href="/login" className="font-bold text-primary">Log in</Link>
+              <Link href="/login" className="font-bold text-primary">
+                Log in
+              </Link>
             </p>
           </div>
         </section>

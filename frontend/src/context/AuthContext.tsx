@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { getProfile } from "../services/auth";
 
 const AuthContext = createContext<any>(null);
@@ -13,13 +13,19 @@ export const AuthProvider = ({ children }: any) => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
-      getProfile(storedToken).then(setUser).catch((err: Error) => {
-        const msg = err?.message?.toLowerCase() ?? "";
-        if (msg.includes("401") || msg.includes("unauthorized") || msg.includes("forbidden")) {
-          logout();
-        }
-        // Network or server errors: keep the token so in-flight requests still work
-      });
+      getProfile(storedToken)
+        .then(setUser)
+        .catch((err: Error) => {
+          const msg = err?.message?.toLowerCase() ?? "";
+          if (
+            msg.includes("401") ||
+            msg.includes("unauthorized") ||
+            msg.includes("forbidden")
+          ) {
+            logout();
+          }
+          // Network or server errors: keep the token so in-flight requests still work
+        });
     }
   }, []);
 
@@ -44,11 +50,12 @@ export const AuthProvider = ({ children }: any) => {
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, token, loginUser, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ user, token, loginUser, logout }),
+    [user, token]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => useContext(AuthContext);

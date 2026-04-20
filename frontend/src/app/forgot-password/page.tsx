@@ -20,7 +20,8 @@ export default function ForgotPasswordPage() {
       await forgotPassword({ email: email.trim() });
       setMessage("Password reset instructions sent. Please check your email.");
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Request failed";
+      const errorMessage =
+        err instanceof Error ? err.message : "Request failed";
       alert(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -32,12 +33,17 @@ export default function ForgotPasswordPage() {
       <div className="app-card overflow-hidden">
         <div className="bg-[linear-gradient(120deg,#1c8c84,#0e6e67)] px-8 py-9 text-center text-[#effffb]">
           <h1 className="title-xl mb-2">Forgot Password</h1>
-          <p className="text-sm text-[#d0f8f3]">We will send you a secure reset token</p>
+          <p className="text-sm text-[#d0f8f3]">
+            We will send you a secure reset token
+          </p>
         </div>
 
         <div className="px-8 py-8">
-          <label className="field-label">Email Address</label>
+          <label htmlFor="forgot-password-email" className="field-label">
+            Email Address
+          </label>
           <input
+            id="forgot-password-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -45,7 +51,11 @@ export default function ForgotPasswordPage() {
             className="field-input mb-5"
           />
 
-          <button onClick={handleSubmit} disabled={isSubmitting} className="btn btn-primary w-full">
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="btn btn-primary w-full"
+          >
             {isSubmitting ? "Submitting..." : "Send Reset Instructions"}
           </button>
 
@@ -61,4 +71,3 @@ export default function ForgotPasswordPage() {
     </div>
   );
 }
-

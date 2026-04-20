@@ -21,7 +21,7 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (mounted && (!user || user.role !== "ADMIN")) {
+    if (mounted && user?.role !== "ADMIN") {
       router.push("/");
     }
   }, [user, mounted, router]);
@@ -45,7 +45,7 @@ export default function AdminPage() {
     }
   }, [user]);
 
-  if (!mounted || !user || user.role !== "ADMIN") {
+  if (!mounted || user?.role !== "ADMIN") {
     return null;
   }
 
@@ -61,8 +61,10 @@ export default function AdminPage() {
 
       alert("Item created!");
       loadItems();
-    } catch (err) {
-      alert("Failed to create item");
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to create item";
+      alert(errorMessage);
     }
   };
 
@@ -78,8 +80,11 @@ export default function AdminPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-              <label className="field-label">Name</label>
+              <label htmlFor="item-name" className="field-label">
+                Name
+              </label>
               <input
+                id="item-name"
                 placeholder="Item name"
                 className="field-input"
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -87,8 +92,11 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="field-label">Price</label>
+              <label htmlFor="item-price" className="field-label">
+                Price
+              </label>
               <input
+                id="item-price"
                 placeholder="Price"
                 className="field-input"
                 onChange={(e) => setForm({ ...form, price: e.target.value })}
@@ -96,8 +104,11 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="field-label">Category</label>
+              <label htmlFor="item-category" className="field-label">
+                Category
+              </label>
               <select
+                id="item-category"
                 className="field-input"
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
               >
@@ -111,8 +122,11 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="field-label">Image URL</label>
+              <label htmlFor="item-image-url" className="field-label">
+                Image URL
+              </label>
               <input
+                id="item-image-url"
                 placeholder="Image URL"
                 className="field-input"
                 onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
@@ -120,12 +134,17 @@ export default function AdminPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="field-label">Description</label>
+              <label htmlFor="item-description" className="field-label">
+                Description
+              </label>
               <textarea
+                id="item-description"
                 placeholder="Description"
                 className="field-input"
                 rows={3}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
               />
             </div>
           </div>
@@ -139,10 +158,7 @@ export default function AdminPage() {
           <h2 className="text-2xl font-bold mb-8">Manage Items</h2>
           <div className="space-y-4">
             {items.map((item: any) => (
-              <div
-                key={item.id}
-                className="app-card p-6"
-              >
+              <div key={item.id} className="app-card p-6">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <img
@@ -153,10 +169,10 @@ export default function AdminPage() {
                     <div>
                       <p className="text-lg font-semibold">{item.name}</p>
                       <p className="text-sm subtitle">{item.description}</p>
-                      <p className="mt-2 font-bold text-secondary">Rs. {item.price}</p>
-                      <p className="pill pill-created mt-1">
-                        {item.category}
+                      <p className="mt-2 font-bold text-secondary">
+                        Rs. {item.price}
                       </p>
+                      <p className="pill pill-created mt-1">{item.category}</p>
                     </div>
                   </div>
 
@@ -173,13 +189,13 @@ export default function AdminPage() {
                       }
                       className="btn btn-accent"
                     >
-                      {item.availability === "AVAILABLE" ? "Mark Unavailable" : "Mark Available"}
+                      {item.availability === "AVAILABLE"
+                        ? "Mark Unavailable"
+                        : "Mark Available"}
                     </button>
 
                     <button
-                      onClick={() =>
-                        deleteItem(item.id, token).then(loadItems)
-                      }
+                      onClick={() => deleteItem(item.id, token).then(loadItems)}
                       className="btn btn-danger"
                     >
                       Delete

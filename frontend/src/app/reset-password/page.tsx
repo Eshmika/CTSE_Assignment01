@@ -35,12 +35,17 @@ export default function ResetPasswordPage() {
       <div className="app-card overflow-hidden">
         <div className="bg-[linear-gradient(120deg,#ef6c2f,#d95a1c)] px-8 py-9 text-center text-[#fff6ef]">
           <h1 className="title-xl mb-2">Reset Password</h1>
-          <p className="text-sm text-[#ffe6d2]">Use your token and create a new password</p>
+          <p className="text-sm text-[#ffe6d2]">
+            Use your token and create a new password
+          </p>
         </div>
 
         <div className="px-8 py-8">
-          <label className="field-label">Reset Token</label>
+          <label htmlFor="reset-token" className="field-label">
+            Reset Token
+          </label>
           <input
+            id="reset-token"
             type="text"
             value={token}
             onChange={(e) => setToken(e.target.value)}
@@ -48,8 +53,11 @@ export default function ResetPasswordPage() {
             className="field-input mb-4"
           />
 
-          <label className="field-label">New Password</label>
+          <label htmlFor="reset-new-password" className="field-label">
+            New Password
+          </label>
           <input
+            id="reset-new-password"
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
@@ -57,7 +65,11 @@ export default function ResetPasswordPage() {
             className="field-input mb-6"
           />
 
-          <button onClick={handleSubmit} disabled={isSubmitting} className="btn btn-primary w-full">
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="btn btn-primary w-full"
+          >
             {isSubmitting ? "Submitting..." : "Reset Password"}
           </button>
         </div>
@@ -71,4 +83,3 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
-

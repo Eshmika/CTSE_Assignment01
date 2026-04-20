@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useMemo } from "react";
 
 const CartContext = createContext<any>(null);
 
@@ -12,9 +12,7 @@ export const CartProvider = ({ children }: any) => {
 
       if (existing) {
         return prev.map((i) =>
-          i.id === item.id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
+          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
 
@@ -26,9 +24,7 @@ export const CartProvider = ({ children }: any) => {
     setCart((prev) =>
       prev
         .map((item) =>
-          item.id === id
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
+          item.id === id ? { ...item, quantity: item.quantity - 1 } : item
         )
         .filter((item) => item.quantity > 0)
     );
@@ -38,11 +34,12 @@ export const CartProvider = ({ children }: any) => {
     setCart([]);
   };
 
-  return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>
-      {children}
-    </CartContext.Provider>
+  const value = useMemo(
+    () => ({ cart, addToCart, removeFromCart, clearCart }),
+    [cart]
   );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
 export const useCart = () => useContext(CartContext);

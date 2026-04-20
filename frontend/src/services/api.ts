@@ -1,4 +1,22 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+
+const getErrorMessage = (responseBody: any, status: number): string => {
+  if (
+    responseBody &&
+    typeof responseBody === "object" &&
+    "message" in responseBody &&
+    typeof responseBody.message === "string"
+  ) {
+    return responseBody.message;
+  }
+
+  if (typeof responseBody === "string" && responseBody.trim().length > 0) {
+    return responseBody;
+  }
+
+  return `Request failed with status ${status}`;
+};
 
 const parseResponseBody = async (res: Response) => {
   if (res.status === 204) {
@@ -40,16 +58,7 @@ export const api = async (
   const responseBody = await parseResponseBody(res);
 
   if (!res.ok) {
-    const message =
-      responseBody &&
-      typeof responseBody === "object" &&
-      "message" in responseBody &&
-      typeof responseBody.message === "string"
-        ? responseBody.message
-        : typeof responseBody === "string" && responseBody.trim().length > 0
-          ? responseBody
-          : `Request failed with status ${res.status}`;
-
+    const message = getErrorMessage(responseBody, res.status);
     throw new Error(message);
   }
 
