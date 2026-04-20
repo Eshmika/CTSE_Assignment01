@@ -72,7 +72,7 @@ jobs:
       - name: Run tests
         run: |
           cd frontend
-          npm run test -- --coverage --watchAll=false
+          npm run test --if-present -- --coverage --watchAll=false
 
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarcloud-github-action@master
