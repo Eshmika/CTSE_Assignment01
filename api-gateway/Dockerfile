@@ -1,6 +1,6 @@
 # Multi-stage build for API Gateway
 # Stage 1: Build
-FROM maven:3.9.6-eclipse-temurin-17 as builder
+FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /build
 COPY . .
 RUN mvn clean package -DskipTests

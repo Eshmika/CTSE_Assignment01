@@ -3,16 +3,17 @@
 # Auth Service API Test Script (Linux/Mac)
 
 BASE_URL="http://localhost:8081"
+SEPARATOR="========================================"
 
-echo "========================================"
+echo "$SEPARATOR"
 echo "  Auth Service API Testing Script"
-echo "========================================"
+echo "$SEPARATOR"
 echo ""
 
 # Test 1: Health Check
 echo "[1/4] Testing Health Endpoint..."
 HEALTH_RESPONSE=$(curl -s "$BASE_URL/auth/health")
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo "✓ Health Check: Service is UP"
 else
     echo "✗ Health Check Failed"
@@ -38,7 +39,7 @@ REGISTER_RESPONSE=$(curl -s -X POST "$BASE_URL/auth/register" \
     -H "Content-Type: application/json" \
     -d "$REGISTER_DATA")
 
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo "✓ Registration Successful"
     TOKEN=$(echo $REGISTER_RESPONSE | jq -r '.token')
     EMAIL=$(echo $REGISTER_DATA | jq -r '.email')
@@ -64,7 +65,7 @@ LOGIN_RESPONSE=$(curl -s -X POST "$BASE_URL/auth/login" \
     -H "Content-Type: application/json" \
     -d "$LOGIN_DATA")
 
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo "✓ Login Successful"
     TOKEN=$(echo $LOGIN_RESPONSE | jq -r '.token')
     USERNAME=$(echo $LOGIN_RESPONSE | jq -r '.username')
@@ -81,7 +82,7 @@ echo "[4/4] Testing Token Validation..."
 VALIDATE_RESPONSE=$(curl -s -X POST "$BASE_URL/auth/validate" \
     -H "Authorization: Bearer $TOKEN")
 
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo "✓ Token Validation Successful"
     VALID=$(echo $VALIDATE_RESPONSE | jq -r '.valid')
     echo "  Valid: $VALID"
@@ -91,9 +92,9 @@ else
 fi
 echo ""
 
-echo "========================================"
+echo "$SEPARATOR"
 echo "  All Tests Passed Successfully! ✓"
-echo "========================================"
+echo "$SEPARATOR"
 echo ""
 echo "You can now:"
 echo "  • Access Swagger UI: $BASE_URL/swagger-ui.html"
