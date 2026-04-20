@@ -70,8 +70,12 @@ jobs:
         if: ${{ matrix.service != 'frontend' }}
         run: |
           cd ${{ matrix.service }}
-          chmod +x mvnw
-          ./mvnw -B test
+          if [ -f .mvn/wrapper/maven-wrapper.properties ]; then
+            chmod +x mvnw
+            ./mvnw -B test
+          else
+            mvn -B test
+          fi
 
       - name: Setup Node.js
         if: ${{ matrix.service == 'frontend' }}
