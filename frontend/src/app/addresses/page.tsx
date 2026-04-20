@@ -121,6 +121,48 @@ export default function AddressesPage() {
     });
   };
 
+  const addressesContent =
+    addresses.length === 0 ? (
+      <div className="app-card p-6 subtitle">No addresses available</div>
+    ) : (
+      addresses.map((address, index) => (
+        <div key={address.id || String(index)} className="app-card p-6">
+          <p className="font-semibold">{address.line1}</p>
+          {address.line2 && <p className="subtitle">{address.line2}</p>}
+          <p className="subtitle">
+            {address.city} {address.state} {address.postalCode}
+          </p>
+          <p className="subtitle">{address.country}</p>
+
+          <div className="flex gap-3 mt-4">
+            <button
+              onClick={() => startEdit(address)}
+              className="btn btn-secondary"
+            >
+              Edit
+            </button>
+
+            {address.id && (
+              <button
+                onClick={() => {
+                  deleteAddress(address.id as string, token)
+                    .then(loadAddresses)
+                    .catch((err: unknown) => {
+                      const errorMessage =
+                        err instanceof Error ? err.message : "Delete failed";
+                      alert(errorMessage);
+                    });
+                }}
+                className="btn btn-danger"
+              >
+                Delete
+              </button>
+            )}
+          </div>
+        </div>
+      ))
+    );
+
   return (
     <div>
       <Navbar />
@@ -190,7 +232,9 @@ export default function AddressesPage() {
                 id="address-postal-code"
                 placeholder="Postal Code"
                 value={form.postalCode}
-                onChange={(e) => setForm({ ...form, postalCode: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, postalCode: e.target.value })
+                }
                 className="field-input"
               />
             </div>
@@ -225,50 +269,7 @@ export default function AddressesPage() {
           </div>
         </div>
 
-        <div className="space-y-4">
-          {addresses.length === 0 ? (
-            <div className="app-card p-6 subtitle">No addresses available</div>
-          ) : (
-            addresses.map((address, index) => (
-              <div key={address.id || String(index)} className="app-card p-6">
-                <p className="font-semibold">{address.line1}</p>
-                {address.line2 && <p className="subtitle">{address.line2}</p>}
-                <p className="subtitle">
-                  {address.city} {address.state} {address.postalCode}
-                </p>
-                <p className="subtitle">{address.country}</p>
-
-                <div className="flex gap-3 mt-4">
-                  <button
-                    onClick={() => startEdit(address)}
-                    className="btn btn-secondary"
-                  >
-                    Edit
-                  </button>
-
-                  {address.id && (
-                    <button
-                      onClick={() => {
-                        deleteAddress(address.id as string, token)
-                          .then(loadAddresses)
-                          .catch((err: unknown) => {
-                            const errorMessage =
-                              err instanceof Error
-                                ? err.message
-                                : "Delete failed";
-                            alert(errorMessage);
-                          });
-                      }}
-                      className="btn btn-danger"
-                    >
-                      Delete
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+        <div className="space-y-4">{addressesContent}</div>
       </div>
     </div>
   );

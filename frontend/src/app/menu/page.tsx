@@ -66,64 +66,66 @@ export default function MenuPage() {
       </div>
     ) : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredItems.map((item: any) => (
-          <div
-            key={item.id}
-            className="app-card overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col"
-          >
-            <div className="relative h-56 bg-[#f7ead8] flex items-center justify-center">
-              <img
-                src={item.imageUrl}
-                alt={item.name}
-                className="max-w-full max-h-56 object-contain hover:scale-105 transition-transform duration-300"
-              />
-              {item.availability !== "AVAILABLE" && (
-                <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">
-                    Out of Stock
-                  </span>
-                </div>
-              )}
-            </div>
+        {filteredItems.map((item: any) => {
+          const isAvailable = item.availability === "AVAILABLE";
+          const buttonClass = isAvailable
+            ? "btn-primary"
+            : "cursor-not-allowed opacity-60";
+          const buttonText = isAvailable ? "Add to Cart" : "Unavailable";
 
-            <div className="p-5 flex flex-col grow">
-              <div className="mb-2">
-                <span className="pill pill-created">{item.category}</span>
-              </div>
-
-              <h2 className="text-xl font-bold mb-2">{item.name}</h2>
-
-              <p className="text-sm line-clamp-2 mb-4 grow subtitle">
-                {item.description}
-              </p>
-
-              <div className="flex justify-between items-center mt-auto pt-4 border-t border-border">
-                <div className="flex flex-col">
-                  <span className="text-xs subtitle">Price</span>
-                  <p className="text-2xl font-bold text-secondary">
-                    Rs. {item.price}
-                  </p>
-                </div>
-
-                {user?.role !== "ADMIN" && (
-                  <button
-                    disabled={item.availability !== "AVAILABLE"}
-                    onClick={() => addToCart(item)}
-                    className={`btn ${
-                      item.availability === "AVAILABLE"
-                        ? "btn-primary"
-                        : "cursor-not-allowed opacity-60"
-                    }`}
-                  >
-                    {item.availability === "AVAILABLE"
-                      ? "Add to Cart"
-                      : "Unavailable"}
-                  </button>
+          return (
+            <div
+              key={item.id}
+              className="app-card overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col"
+            >
+              <div className="relative h-56 bg-[#f7ead8] flex items-center justify-center">
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  className="max-w-full max-h-56 object-contain hover:scale-105 transition-transform duration-300"
+                />
+                {!isAvailable && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">
+                      Out of Stock
+                    </span>
+                  </div>
                 )}
               </div>
+
+              <div className="p-5 flex flex-col grow">
+                <div className="mb-2">
+                  <span className="pill pill-created">{item.category}</span>
+                </div>
+
+                <h2 className="text-xl font-bold mb-2">{item.name}</h2>
+
+                <p className="text-sm line-clamp-2 mb-4 grow subtitle">
+                  {item.description}
+                </p>
+
+                <div className="flex justify-between items-center mt-auto pt-4 border-t border-border">
+                  <div className="flex flex-col">
+                    <span className="text-xs subtitle">Price</span>
+                    <p className="text-2xl font-bold text-secondary">
+                      Rs. {item.price}
+                    </p>
+                  </div>
+
+                  {user?.role !== "ADMIN" && (
+                    <button
+                      disabled={!isAvailable}
+                      onClick={() => addToCart(item)}
+                      className={`btn ${buttonClass}`}
+                    >
+                      {buttonText}
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
 

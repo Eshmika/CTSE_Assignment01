@@ -55,32 +55,30 @@ export default function OrderDetailsPage() {
 
   useEffect(() => {
     const items = order?.items;
-    if (!items || items.length === 0) {
-      return;
-    }
+    if (items && items.length > 0) {
+      const uniqueItemIds = [
+        ...new Set(items.map((item: any) => item.itemId)),
+      ] as string[];
 
-    const uniqueItemIds = [
-      ...new Set(items.map((item: any) => item.itemId)),
-    ] as string[];
-
-    Promise.all(
-      uniqueItemIds.map(async (itemId) => {
-        try {
-          const item = await getItemById(itemId);
-          return [itemId, item] as const;
-        } catch {
-          return [itemId, null] as const;
-        }
-      })
-    ).then((resolvedItems) => {
-      const lookup: Record<string, CatalogItem> = {};
-      resolvedItems.forEach(([itemId, item]) => {
-        if (item) {
-          lookup[itemId] = item;
-        }
+      Promise.all(
+        uniqueItemIds.map(async (itemId) => {
+          try {
+            const item = await getItemById(itemId);
+            return [itemId, item] as const;
+          } catch {
+            return [itemId, null] as const;
+          }
+        })
+      ).then((resolvedItems) => {
+        const lookup: Record<string, CatalogItem> = {};
+        resolvedItems.forEach(([itemId, item]) => {
+          if (item) {
+            lookup[itemId] = item;
+          }
+        });
+        setCatalogItemsById(lookup);
       });
-      setCatalogItemsById(lookup);
-    });
+    }
   }, [order]);
 
   const getStatusClass = (status: string) =>
