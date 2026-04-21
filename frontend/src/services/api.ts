@@ -1,5 +1,5 @@
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api-gateway.whitedesert-d216bdbd.southeastasia.azurecontainerapps.io";
 
 const getErrorMessage = (responseBody: any, status: number): string => {
   if (
