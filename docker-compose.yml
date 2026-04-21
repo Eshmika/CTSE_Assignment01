@@ -60,7 +60,7 @@ services:
       - microservices-network
     healthcheck:
       test:
-        ["CMD", "wget", "-q", "-O-", "http://localhost:8082/actuator/health"]
+        ["CMD", "wget", "-q", "-O-", "http://localhost:8082/catalog/v3/api-docs"]
       interval: 30s
       timeout: 3s
       retries: 3
@@ -81,7 +81,7 @@ services:
       - microservices-network
     healthcheck:
       test:
-        ["CMD", "wget", "-q", "-O-", "http://localhost:8083/actuator/health"]
+        ["CMD", "wget", "-q", "-O-", "http://localhost:8083/orders/v3/api-docs"]
       interval: 30s
       timeout: 3s
       retries: 3
@@ -102,7 +102,7 @@ services:
       - microservices-network
     healthcheck:
       test:
-        ["CMD", "wget", "-q", "-O-", "http://localhost:8084/actuator/health"]
+        ["CMD", "wget", "-q", "-O-", "http://localhost:8084/payments/v3/api-docs"]
       interval: 30s
       timeout: 3s
       retries: 3
