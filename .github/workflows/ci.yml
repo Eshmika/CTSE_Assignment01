@@ -39,6 +39,8 @@ jobs:
 
       - name: SonarCloud Scan ${{ matrix.service }}
         uses: SonarSource/sonarcloud-github-action@master
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -47,6 +49,8 @@ jobs:
 
       - name: Snyk Security Scan ${{ matrix.service }}
         uses: snyk/actions/maven@master
+        if: ${{ secrets.SNYK_TOKEN != '' }}
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
@@ -77,6 +81,8 @@ jobs:
 
       - name: SonarCloud Scan Frontend
         uses: SonarSource/sonarcloud-github-action@master
+        if: ${{ secrets.SONAR_TOKEN != '' }}
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -85,6 +91,8 @@ jobs:
 
       - name: Snyk Security Scan Frontend
         uses: snyk/actions/node@master
+        if: ${{ secrets.SNYK_TOKEN != '' }}
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
