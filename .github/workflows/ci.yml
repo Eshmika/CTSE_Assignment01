@@ -10,6 +10,7 @@ jobs:
   backend-security:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         service: [api-gateway, auth-service, catalog-service, order-service, payment-service]
     steps:
@@ -83,14 +84,17 @@ jobs:
           projectBaseDir: frontend
 
       - name: Snyk Security Scan Frontend
-        uses: snyk/actions/npm@master
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --file=frontend/package.json
+          args: --file=frontend/package.json --package-manager=npm
 
   docker-security:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -104,7 +108,7 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v2
-        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
         with:
           sarif_file: 'trivy-results.sarif'
