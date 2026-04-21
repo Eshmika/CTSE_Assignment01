@@ -36,10 +36,33 @@ body {
 
 .app-shell {
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(47, 122, 87, 0.14) 0, transparent 36%),
-    radial-gradient(circle at 85% 0%, rgba(107, 79, 63, 0.14) 0, transparent 40%),
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(47, 122, 87, 0.14) 0,
+      transparent 36%
+    ),
+    radial-gradient(
+      circle at 85% 0%,
+      rgba(107, 79, 63, 0.14) 0,
+      transparent 40%
+    ),
     var(--background);
+}
+
+.creative-toast {
+  animation: creative-toast-rise 0.28s ease-out;
+}
+
+@keyframes creative-toast-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .topbar {
@@ -105,7 +128,11 @@ body {
 }
 
 .btn-secondary {
-  background: linear-gradient(180deg, var(--secondary), var(--secondary-strong));
+  background: linear-gradient(
+    180deg,
+    var(--secondary),
+    var(--secondary-strong)
+  );
   color: #ecfffd;
 }
 
@@ -186,9 +213,16 @@ body {
   position: relative;
   min-height: 520px;
   padding: 3rem 2.75rem;
-  background:
-    radial-gradient(circle at 14% 14%, rgba(47, 122, 87, 0.2) 0, transparent 18%),
-    radial-gradient(circle at 90% 10%, rgba(107, 79, 63, 0.18) 0, transparent 16%),
+  background: radial-gradient(
+      circle at 14% 14%,
+      rgba(47, 122, 87, 0.2) 0,
+      transparent 18%
+    ),
+    radial-gradient(
+      circle at 90% 10%,
+      rgba(107, 79, 63, 0.18) 0,
+      transparent 16%
+    ),
     linear-gradient(165deg, #faf6ed 0%, #dce9dd 48%, #c4ddd0 100%);
 }
 
