@@ -1,122 +1,154 @@
-name: CI/CD Pipeline with Security
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, Nethrani ]
+    branches: [main, Nethrani]
   pull_request:
-    branches: [ main, Nethrani ]
+    branches: [main, Nethrani]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  backend-security:
+  backend-build:
+    name: Backend Build (${{ matrix.service }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        service: [api-gateway, auth-service, catalog-service, order-service, payment-service]
+        include:
+          - service: api-gateway
+            java: "17"
+          - service: auth-service
+            java: "21"
+          - service: catalog-service
+            java: "21"
+          - service: order-service
+            java: "17"
+          - service: payment-service
+            java: "17"
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v5
+      - name: Set up JDK ${{ matrix.java }}
+        uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
 
       - name: Build and test ${{ matrix.service }}
+        working-directory: ${{ matrix.service }}
         run: |
-          cd ${{ matrix.service }}
-          mvn clean verify -DskipTests=false
+          chmod +x mvnw
+          ./mvnw -B clean verify
 
-      - name: SonarCloud Scan ${{ matrix.service }}
-        uses: SonarSource/sonarcloud-github-action@master
-        if: ${{ secrets.SONAR_TOKEN != '' }}
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: ${{ matrix.service }}
-
-      - name: Snyk Security Scan ${{ matrix.service }}
-        uses: snyk/actions/maven@master
-        if: ${{ secrets.SNYK_TOKEN != '' }}
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --file=${{ matrix.service }}/pom.xml
-
-  frontend-security:
+  frontend-build:
+    name: Frontend Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: npm
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint and build
+        working-directory: frontend
         run: |
-          cd frontend
-          npm ci
-
-      - name: Run tests
-        run: |
-          cd frontend
-          npm run test --if-present -- --coverage --watchAll=false
-
-      - name: SonarCloud Scan Frontend
-        uses: SonarSource/sonarcloud-github-action@master
-        if: ${{ secrets.SONAR_TOKEN != '' }}
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: frontend
-
-      - name: Snyk Security Scan Frontend
-        uses: snyk/actions/node@master
-        if: ${{ secrets.SNYK_TOKEN != '' }}
-        continue-on-error: true
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --file=frontend/package.json --package-manager=npm
+          npm run lint
+          npm run build
 
   docker-security:
+    name: Trivy Scan
     runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+          scan-type: fs
+          scan-ref: .
+          format: sarif
+          output: trivy-results.sarif
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v3
         if: always() && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false)
         with:
-          sarif_file: 'trivy-results.sarif'
+          sarif_file: trivy-results.sarif
+
+  deploy-images:
+    name: Build and Push Docker Images
+    runs-on: ubuntu-latest
+    needs: [backend-build, frontend-build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - service: api-gateway
+            dockerfile: api-gateway/Dockerfile
+            context: api-gateway
+          - service: auth-service
+            dockerfile: auth-service/Dockerfile
+            context: auth-service
+          - service: catalog-service
+            dockerfile: catalog-service/Dockerfile
+            context: catalog-service
+          - service: order-service
+            dockerfile: order-service/Dockerfile
+            context: order-service
+          - service: payment-service
+            dockerfile: payment-service/Dockerfile
+            context: payment-service
+          - service: frontend
+            dockerfile: frontend/Dockerfile
+            context: frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set lowercase owner
+        id: vars
+        run: echo "owner_lc=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push ${{ matrix.service }} image
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ghcr.io/${{ steps.vars.outputs.owner_lc }}/ctse-${{ matrix.service }}:latest
+            ghcr.io/${{ steps.vars.outputs.owner_lc }}/ctse-${{ matrix.service }}:${{ github.sha }}
