@@ -37,7 +37,7 @@ export default function LandingPage() {
       <section className="section-wrap py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div>
           <p className="pill pill-created mb-4">Your flavor. Your schedule.</p>
-          <h2 className="title-xl mb-4">Order Restaurant Favorites With Zero Friction</h2>
+          <h2 className="title-xl mb-4">Order Restaurant Favorites With Zero Friction..</h2>
           <p className="subtitle text-lg mb-8">
             Explore curated menus, customize your cart, and track every order in real time with a smooth checkout flow.
           </p>
