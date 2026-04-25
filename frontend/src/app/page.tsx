@@ -34,6 +34,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
+{/* add test comment  */}
       <section className="section-wrap py-16 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         <div>
           <p className="pill pill-created mb-4">Your flavor. Your schedule.</p>
